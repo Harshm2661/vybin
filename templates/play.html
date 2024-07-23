@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Play Song{% endblock %}
+
+{% block content %}
+<h1>Now Playing: {{ track['Title'] }}</h1>
+<audio controls>
+    <source src="{{ url_for('static', filename='audio/' + track['AudioFileURL'].split('/')[-1]) }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<button id="like-button" data-track-id="{{ track['TrackID'] }}">Like</button>
+
+<script>
+document.getElementById('like-button').addEventListener('click', function() {
+    var trackId = this.getAttribute('data-track-id');
+    fetch('/like/' + trackId, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}
